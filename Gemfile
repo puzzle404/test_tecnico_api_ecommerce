@@ -1,3 +1,4 @@
+# coding: utf-8
 source 'https://rubygems.org'
 
 gem 'rails', '3.2.22' # Ya está definido por el proyecto
@@ -24,3 +25,12 @@ gem 'rspec-rails', '2.14.1' # Versión anterior que debería evitar el problema
 
 gem 'bcrypt-ruby', '3.0.1'
 # gem 'bcrypt-ruby', '~> 3.1.5'
+
+
+#  Paperclip para subir archivos (intentar con una versión más estable)
+gem "paperclip"
+
+gem 'climate_control', '~> 0.2.0'
+
+
+gem 'faker', '1.6.6'
