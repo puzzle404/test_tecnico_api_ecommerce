@@ -1,7 +1,7 @@
 class Administrator < ActiveRecord::Base
-  attr_accessible :name, :email, :password, :password_confirmation
-
   has_secure_password
+  attr_accessible :name, :email, :password, :password_confirmation, :valid_token
+
 
   validates :name, presence: true
   validates :email, presence: true, uniqueness: true

@@ -79,8 +79,15 @@ purchase_count.times do
     product_id: product.id,        # Usar product_id en lugar de product
     quantity: quantity,
     total_price: product.price * quantity,
-    purchase_date: Faker::Date.between(1.year.ago, Date.today)
+    purchase_date: Faker::Time.between(1.year.ago, Date.today)
   )
+end
+
+# Crear registro auditables para los Productos cuando se editan
+products.sample(5).each do |product|
+  admin = admins.sample # Selecciona un administrador al azar para esta actualización
+
+  product.update_attributes(price: product.price * 1.1, administrator_id: admin.id) # Llama a log_update y pasa el admin que hizo el cambio
 end
 
 puts "Se han creado #{admin_count} administradores, #{categories.count} categorías, #{product_count} productos, #{customers.count} clientes y #{purchase_count} compras."

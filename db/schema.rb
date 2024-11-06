@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20241031204215) do
+ActiveRecord::Schema.define(:version => 20241106140755) do
 
   create_table "administrators", :force => true do |t|
     t.string   "name"
@@ -19,7 +19,21 @@ ActiveRecord::Schema.define(:version => 20241031204215) do
     t.string   "password_digest"
     t.datetime "created_at",      :null => false
     t.datetime "updated_at",      :null => false
+    t.string   "valid_token"
   end
+
+  create_table "audit_logs", :force => true do |t|
+    t.integer  "auditable_id",   :null => false
+    t.string   "auditable_type", :null => false
+    t.integer  "admin_id",       :null => false
+    t.string   "action",         :null => false
+    t.text     "change_log"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
+  end
+
+  add_index "audit_logs", ["admin_id"], :name => "index_audit_logs_on_admin_id"
+  add_index "audit_logs", ["auditable_type", "auditable_id"], :name => "index_audit_logs_on_auditable_type_and_auditable_id"
 
   create_table "categories", :force => true do |t|
     t.string   "name"

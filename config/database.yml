@@ -1,19 +1,21 @@
 default: &default
   adapter: postgresql
   encoding: unicode
-  host: <%= ENV['DATABASE_HOST'] %>    # Configurado en docker-compose.yml o .env
+  pool: 5
   username: <%= ENV['DATABASE_USERNAME'] %>
   password: <%= ENV['DATABASE_PASSWORD'] %>
-  pool: 5
+  host: <%= ENV['DATABASE_HOST'] %>
 
 development:
   <<: *default
-  database: <%= ENV['DATABASE_NAME'] %>   # Configura el nombre para desarrollo
+  database: ecommerce_db_development
 
 test:
   <<: *default
-  database: <%= ENV['DATABASE_NAME'] %>_test
+  database: ecommerce_db_test
 
 production:
   <<: *default
-  database: <%= ENV['DATABASE_NAME'] %>_production
+  database: ecommerce_db_production
+  username: ecommerce_prod_user
+  password: <%= ENV['DATABASE_PASSWORD_PRODUCTION'] %>
