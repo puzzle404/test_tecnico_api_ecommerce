@@ -11,7 +11,12 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3  # Usamos la última versión de checkout
+
+      - name: Set up Docker
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose  # Instala docker-compose
 
       - name: Set up Docker Compose
         run: docker-compose up -d db redis
