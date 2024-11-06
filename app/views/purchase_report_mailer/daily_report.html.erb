@@ -1,0 +1,12 @@
+<h1>Reporte Diario de Compras</h1>
+<p>Estimado <%= @admin.name %>,</p>
+
+<p>A continuación, se muestra el resumen de compras del día anterior:</p>
+
+<ul>
+  <% @report_data.each do |data| %>
+    <li>Producto: <%= data[:product] %> - Total Compras: <%= data[:total_purchases] %></li>
+  <% end %>
+</ul>
+
+<p>Saludos,<br>El equipo de Soporte</p>

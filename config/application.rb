@@ -58,5 +58,14 @@ module App
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
+
+    if RUBY_VERSION < '2.2.2'
+      class Thread
+        def self.handle_interrupt(*)
+          yield
+        end
+      end
+    end
+
   end
 end

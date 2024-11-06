@@ -36,4 +36,18 @@ App::Application.configure do
   # Expands the lines which load the assets
   config.assets.debug = true
 
+  # config/environments/development.rb
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    address:              'smtp.sendgrid.net',
+    port:                 587,
+    domain:               'localhost', # Cambia esto a tu dominio
+    user_name:            'apikey', # SendGrid utiliza 'apikey' como el nombre de usuario
+    password:             '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', # Reemplaza esto con tu API Key real
+    authentication:       :plain,
+    enable_starttls_auto: true
+  }
+  config.action_mailer.perform_deliveries = true
+  config.action_mailer.raise_delivery_errors = true
+
 end

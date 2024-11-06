@@ -14,6 +14,12 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
 
+  redis:
+    image: redis:2.8
+    platform: linux/amd64
+    ports:
+      - "6379:6379"
+
   app:
     platform: linux/amd64
     build: .
@@ -23,12 +29,41 @@ services:
       - "3000:3000"
     depends_on:
       - db
+      - redis
     environment:
       DATABASE_HOST: ${DATABASE_HOST}
       DATABASE_USERNAME: ${POSTGRES_USER}
       DATABASE_PASSWORD: ${POSTGRES_PASSWORD}
       DATABASE_NAME: ${POSTGRES_DB}
     command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails server -b 0.0.0.0 -p 3000"
+
+  sidekiq:
+    platform: linux/amd64
+    build: .
+    command: bundle exec sidekiq
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+      - app
+    environment:
+      DATABASE_HOST: ${DATABASE_HOST}
+      DATABASE_USERNAME: ${POSTGRES_USER}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD}
+      DATABASE_NAME: ${POSTGRES_DB}
+
+  report-cron:
+    platform: linux/amd64
+    build: .
+    command: bash -c "while true; do bundle exec rails runner 'DailyPurchaseReportWorker.perform_async'; sleep 86400; done"
+    depends_on:
+      - redis
+      - app
+    environment:
+      DATABASE_HOST: ${DATABASE_HOST}
+      DATABASE_USERNAME: ${POSTGRES_USER}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD}
+      DATABASE_NAME: ${POSTGRES_DB}
 
 volumes:
   postgres_data:

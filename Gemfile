@@ -44,3 +44,8 @@ gem 'dotenv-rails', groups: [:development, :test]
 group :test do
   gem 'database_cleaner', '~> 1.7.0' # Versión compatible con Rails 3 y Ruby 1.9.3
 end
+
+
+gem 'sidekiq', '~> 2.17.8'
+
+gem 'connection_pool', '2.0'

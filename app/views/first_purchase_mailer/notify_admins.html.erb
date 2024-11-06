@@ -1,0 +1,11 @@
+<h1>¡Primera compra de <%= @product.name %>!</h1>
+<p>Estimado <%= @creator.name %>,</p>
+<p>Se ha realizado la primera compra de tu producto <%= @product.name %>.</p>
+<p>Detalles:</p>
+<ul>
+  <li>Producto: <%= @product.name %></li>
+  <li>Cliente: <%= @purchase.customer.name %></li>
+  <li>Precio unitario: <%= @product.price %></li>
+  <li>Precio total: <%= @purchase.total_price %></li>
+</ul>
+<p>Saludos,<br>El equipo de Soporte</p>

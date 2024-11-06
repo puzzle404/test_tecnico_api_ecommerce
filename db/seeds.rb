@@ -2,6 +2,8 @@
 
 
 require 'faker'
+# Desactiva los callbacks para el caso del envio de email cuando se crea el 1er producto, para que no se envien tantos correos
+ENV['DISABLE_CALLBACKS_FOR_SEEDS'] = 'true'
 
 # Limpiar todos los datos existentes
 Administrator.destroy_all
@@ -91,3 +93,4 @@ products.sample(5).each do |product|
 end
 
 puts "Se han creado #{admin_count} administradores, #{categories.count} categorías, #{product_count} productos, #{customers.count} clientes y #{purchase_count} compras."
+ENV.delete('DISABLE_CALLBACKS_FOR_SEEDS')
