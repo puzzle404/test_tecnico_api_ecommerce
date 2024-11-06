@@ -1,4 +1,3 @@
-# .github/workflows/ci.yml
 name: CI
 
 on:
@@ -10,59 +9,19 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    services:
-      db:
-        image: postgres:9.6
-        env:
-          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-      redis:
-        image: redis:2.8
-        ports:
-          - 6379:6379
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Ruby
-        uses: actions/setup-ruby@v1
-        with:
-          ruby-version: 1.9.3
+      - name: Set up Docker Compose
+        run: docker-compose up -d db redis
 
-      - name: Install dependencies
-        run: |
-          gem install bundler
-          bundle install
-
-      - name: Set up environment variables
-        run: |
-          echo "DATABASE_HOST=localhost" >> .env
-          echo "DATABASE_USERNAME=${{ secrets.POSTGRES_USER }}" >> .env
-          echo "DATABASE_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
-          echo "DATABASE_NAME=${{ secrets.POSTGRES_DB }}" >> .env
-
-      - name: Set up database
-        env:
-          RAILS_ENV: test
-          DATABASE_HOST: localhost
-          DATABASE_USERNAME: ${{ secrets.POSTGRES_USER }}
-          DATABASE_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          DATABASE_NAME: ${{ secrets.POSTGRES_DB }}
-        run: |
-          bundle exec rails db:create db:migrate
+      - name: Build custom Ruby 1.9.3 container
+        run: docker-compose up --build -d app sidekiq report-cron
 
       - name: Run tests
-        env:
-          RAILS_ENV: test
-        run: |
-          bundle exec rspec
+        run: docker-compose run app bundle exec rspec
+
+      - name: Teardown
+        if: always()
+        run: docker-compose down
