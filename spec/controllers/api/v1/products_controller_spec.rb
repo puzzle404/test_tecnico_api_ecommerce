@@ -16,8 +16,8 @@ RSpec.describe Api::V1::ProductsController, type: :controller do
       token = generate_jwt_token_for_admin
 
       # Crear categorías
-      category1 = Category.create!(name: "Category 1")
-      category2 = Category.create!(name: "Category 2")
+      category1 = Category.create!(name: "Category 1", administrator_id: @admin.id)
+      category2 = Category.create!(name: "Category 2", administrator_id: @admin.id)
 
       # Crear productos asociados a las categorías
       product1 = Product.create!(name: "Product 1", price: 10.0, stock: 100, administrator_id: @admin.id)
@@ -70,8 +70,8 @@ RSpec.describe Api::V1::ProductsController, type: :controller do
       token = generate_jwt_token_for_admin
 
       # Crear categorías
-      category1 = Category.create!(name: "Category 1")
-      category2 = Category.create!(name: "Category 2")
+      category1 = Category.create!(name: "Category 1", administrator_id: @admin.id)
+      category2 = Category.create!(name: "Category 2", administrator_id: @admin.id)
 
       # Crear productos asociados a las categorías
       product1 = Product.create!(name: "Product 1", price: 10.0, stock: 100, administrator_id: @admin.id)
