@@ -5,7 +5,7 @@ require 'support/authentication_helper'
 RSpec.describe Api::V1::ProductsController, type: :controller do
   include AuthenticationHelper
 
-  # Omite el filtro `authenticate_admin!` para los tests de este controladorR
+  # Omite el filtro `authenticate_admin!` para los tests de este controlador
   before(:each) do
     Api::V1::ProductsController.skip_before_filter :authenticate_admin!
   end
