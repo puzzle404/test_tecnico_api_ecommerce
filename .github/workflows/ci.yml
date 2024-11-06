@@ -39,7 +39,7 @@ jobs:
       - name: Set up Ruby
         uses: actions/setup-ruby@v1
         with:
-          ruby-version: 2.7 # Cambia a la versión de Ruby que usas en el proyecto
+          ruby-version: 1.9.3 # Cambia a la versión de Ruby que usas en el proyecto
 
       - name: Install dependencies
         run: |
