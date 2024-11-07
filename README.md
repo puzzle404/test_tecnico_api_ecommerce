@@ -154,6 +154,8 @@ Restaurar Configuración Original
 
 Una vez verificada la funcionalidad del envío diario, vuelve a cambiar el valor de sleep en el archivo docker-compose.yml a sleep 86400 para que el reporte se genere cada 24 horas de forma automática.
 
+
+
 ## Tecnologías Utilizadas
 
 - **Ruby on Rails 3.2.22**: Framework de desarrollo web para construir y estructurar la aplicación, facilitando la implementación de patrones de diseño MVC (Modelo-Vista-Controlador) y la gestión de bases de datos, vistas y controladores.
@@ -169,6 +171,102 @@ Una vez verificada la funcionalidad del envío diario, vuelve a cambiar el valor
     **Sidekiq**: Ejecuta trabajos en segundo plano, como el envío de correos electrónicos y la generación de informes, conectándose a Redis para gestionar las tareas de manera eficiente.
     **Report-Cron**: Contenedor especial configurado para ejecutar automáticamente un worker de Sidekiq cada 24 horas, generando informes de compras y enviándolos a los administradores.
 - **Sidekiq**: Gem que permite ejecutar trabajos en segundo plano (background jobs), esencial para manejar tareas que no necesitan procesarse en tiempo real, como el envío de correos electrónicos y el procesamiento de informes. Sidekiq utiliza Redis para gestionar la cola de trabajos en la aplicación, optimizando la ejecución de procesos largos o intensivos.
+
+## Problemas Comunes
+
+- **Problemas de Conexión a la Base de Datos**: Si ves un error indicando que no puede conectar al servidor de PostgreSQL, asegúrate de que el contenedor de la base de datos esté en ejecución:
+
+  ```bash
+  docker-compose ps
+  ```
+
+  Asegúrate de que el contenedor `db` está `Up` y no tiene errores.
+
+- **Permisos de Archivos**: Si tienes problemas al guardar archivos, intenta cambiar los permisos de los archivos en el contenedor con el siguiente comando:
+
+  ```bash
+  sudo chown -R $(whoami):$(whoami) .
+  ```
+
+## Contribuciones
+
+Si deseas contribuir a este proyecto, por favor realiza un fork del repositorio, crea una rama con tu función y luego realiza un pull request.
+
+## Pruebas de Envío Diario de Reporte
+
+Para verificar que el envío diario de reportes funcione correctamente sin tener que esperar 24 horas, puedes modificar el comportamiento del servicio `report-cron` para que el reporte se genere con mayor frecuencia durante la fase de pruebas.
+
+### Pasos para Testear el Envío de Reporte Diario
+
+#### 1. Modificar el Intervalo de Envío
+
+- Abre el archivo `docker-compose.yml` y localiza el servicio `report-cron`.
+- Cambia el valor de `sleep 86400` (24 horas) a un valor más corto, como `sleep 60`, para que el reporte se genere cada minuto.
+
+**Ejemplo:**
+
+```yaml
+yaml
+report-cron:
+  platform: linux/amd64
+  build: .
+  command: bash -c "while true; do bundle exec rails runner 'DailyPurchaseReportWorker.perform_async'; sleep 60; done"
+  depends_on:
+    - redis
+    - app
+  environment:
+    DATABASE_HOST: ${DATABASE_HOST}
+    DATABASE_USERNAME: ${POSTGRES_USER}
+    DATABASE_PASSWORD: ${POSTGRES_PASSWORD}
+    DATABASE_NAME: ${POSTGRES_DB}
+```
+
+#### 2. Levantar los Servicios
+
+Luego de modificar el archivo `docker-compose.yml`, ejecuta el siguiente comando para levantar el servicio:
+
+```bash
+bash
+docker-compose up -d report-cron
+```
+
+Esto hará que el `DailyPurchaseReportWorker` se ejecute automáticamente y genere reportes cada minuto.
+
+#### 3. Verificar el Envío de Correos
+
+- Puedes comprobar los logs del servicio `sidekiq` para confirmar que el envío del correo del reporte se haya realizado exitosamente.
+
+Para ver los logs de Sidekiq:
+
+```bash
+bash
+docker-compose logs -f sidekiq
+```
+
+- También puedes comprobar en la bandeja de entrada del correo de los administradores para verificar que hayan recibido el reporte.
+
+### Restaurar Configuración Original
+
+Una vez verificada la funcionalidad del envío diario, vuelve a cambiar el valor de `sleep` en el archivo `docker-compose.yml` a `sleep 86400` para que el reporte se genere cada 24 horas de forma automática.
+
+### Configuración de Integración Continua (CI) para Pruebas Automáticas
+
+Para asegurar que el proyecto funcione correctamente en cada cambio realizado, se ha configurado un flujo de Integración Continua (CI) utilizando GitHub Actions. Esto permite ejecutar pruebas automáticas en cada pull request.
+
+#### Configuración del Workflow de GitHub Actions
+
+Este flujo de trabajo se ejecutará automáticamente cada vez que se cree un pull request hacia la rama `master`. A continuación se describe cada paso:
+
+1. **Checkout code**: Descarga el código fuente del repositorio.
+2. **Set up Docker**: Actualiza los paquetes e instala `docker-compose`.
+3. **Set up Docker Compose**: Levanta los servicios de base de datos (`db`) y `redis` necesarios para la aplicación.
+4. **Build custom Ruby 1.9.3 container**: Construye y levanta los contenedores de la aplicación, `sidekiq` y `report-cron`.
+5. **Set up database**: Crea y migra la base de datos en el entorno de pruebas.
+6. **Run tests**: Ejecuta las pruebas utilizando `rspec` para asegurar que todo funciona correctamente.
+7. **Teardown**: Baja los servicios al finalizar, independientemente del resultado de las pruebas.
+
+Con esta configuración de CI, puedes garantizar que los cambios realizados no introduzcan errores antes de ser integrados en la rama principal.
+
 
 ## Problemas Comunes
 
