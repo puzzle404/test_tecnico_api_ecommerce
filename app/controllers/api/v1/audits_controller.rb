@@ -4,7 +4,7 @@ module Api
     class AuditsController < ApplicationController
       before_filter :authenticate_admin!
       def index
-        render json: AuditLog.all
+        render json: AuditLog.order("created_at DESC")
       end
     end
   end

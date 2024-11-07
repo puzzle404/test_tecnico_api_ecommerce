@@ -5,6 +5,7 @@ class Category < ActiveRecord::Base
   has_many :audit_logs, as: :auditable
 
   validates :name, presence: true, uniqueness: true
+  validates :administrator_id, presence: true
 
   # Registrar la creación y las actualizaciones
   after_create :log_creation

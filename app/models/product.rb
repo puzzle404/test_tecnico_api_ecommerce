@@ -6,7 +6,7 @@ class Product < ActiveRecord::Base
   has_many :images
   has_many :audit_logs, as: :auditable
 
-  validates :name, presence: true
+  validates :name, :price, :stock, :administrator_id, presence: true
   validates :price, numericality: { greater_than_or_equal_to: 0 }
   validates :stock, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
@@ -14,12 +14,28 @@ class Product < ActiveRecord::Base
   after_create :log_creation
   after_update :log_update
 
+  def self.most_purchased_by_category(category)
+    category.products.joins(:purchases)
+                    .select('products.*, COUNT(purchases.id) as purchases_count')
+                    .group('products.id')
+                    .order('purchases_count DESC')
+  end
+
+  # Método para obtener los productos con mayor recaudación de una categoría
+  def self.top_revenue_by_category(category, limit = 3)
+    category.products.joins(:purchases)
+                    .select('products.*, SUM(purchases.total_price) as total_revenue')
+                    .group('products.id')
+                    .order('total_revenue DESC')
+                    .limit(limit)
+  end
+
   def log_creation
     AuditLog.create!(
       auditable: self,
-      admin_id: self.administrator_id, # Asegúrate de que `administrator_id` esté presente al crear
+      admin_id: self.administrator_id,
       action: 'create',
-      change_log: self.attributes.to_s # Guarda los atributos iniciales (en texto)
+      change_log: self.attributes.to_s
     )
   end
 

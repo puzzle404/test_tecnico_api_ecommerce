@@ -8,6 +8,12 @@ RSpec.describe Api::V1::ProductsController, type: :controller do
   # Omite el filtro `authenticate_admin!` para los tests de este controlador
   before(:each) do
     Api::V1::ProductsController.skip_before_filter :authenticate_admin!
+    # Desactiva los callbacks para el caso del envio de email
+    ENV['DISABLE_CALLBACKS_FOR_SEEDS'] = 'true'
+  end
+
+  after(:each) do
+    ENV.delete('DISABLE_CALLBACKS_FOR_SEEDS')
   end
 
   describe "GET most_purchased" do
