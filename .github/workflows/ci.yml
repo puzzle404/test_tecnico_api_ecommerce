@@ -25,7 +25,9 @@ jobs:
         run: docker-compose up --build -d app sidekiq report-cron
 
       - name: Set up database
-        run: docker-compose run app bash -c "RAILS_ENV=test bundle exec rails db:create db:migrate"
+        run: |
+          docker-compose run app bundle exec rake db:create RAILS_ENV=test
+          docker-compose run app bundle exec rake db:migrate RAILS_ENV=test
 
       - name: Run tests
         run: docker-compose run app bundle exec rspec
