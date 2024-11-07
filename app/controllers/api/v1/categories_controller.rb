@@ -10,7 +10,7 @@ module Api
       end
 
       def create
-        unless Administrator.exists?(id: params[:administrator_id])
+        unless Administrator.exists?(id: params[:category][:administrator_id])
           render json: { error: 'Administrator not found' }, status: :not_found
           return
         end
