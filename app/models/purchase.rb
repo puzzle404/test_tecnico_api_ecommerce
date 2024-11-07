@@ -54,11 +54,14 @@ class Purchase < ActiveRecord::Base
 
   def first_purchase?
     # Verifica si esta es la primera compra del producto dentro de la transacción
+    Rails.logger.error "first purchase for product #{product.name}."
     Purchase.where(product_id: product_id).count == 1
   end
 
   def send_first_purchase_email
     # Envía el correo al creador del producto y en copia a los demás administradores
+    puts "Sending first purchase email for product #{product.name}"
+    Rails.logger.error "No se puede enviar el correo de primera compra porque el producto con ID #{product.name} no tiene un administrador."
     FirstPurchaseMailer.notify_admins(product).deliver
   end
 end

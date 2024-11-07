@@ -9,6 +9,24 @@ module Api
         render json: products
       end
 
+      def create
+        product = Product.new(product_params)
+        if product.save
+          render json: product, status: :created
+        else
+          render json: { errors: product.errors.full_messages }, status: :unprocessable_entity
+        end
+      end
+
+      def update
+        product = Product.find(params[:id])
+        if product.update_attributes(product_params)
+          render json: product, status: :ok
+        else
+          render json: { errors: product.errors.full_messages }, status: :unprocessable_entity
+        end
+      end
+
       def most_purchased
         result = Category.all.each_with_object({}) do |category, hash|
           products = Product.most_purchased_by_category(category)
@@ -38,6 +56,13 @@ module Api
         end
 
         render json: result
+      end
+
+      private
+
+      # En Rails 3 no tienes `.permit`, así que debes hacer el filtrado manualmente.
+      def product_params
+        params[:product].slice(:name, :price, :stock, :description, :administrator_id)
       end
     end
   end

@@ -7,7 +7,6 @@ class PurchaseReportMailer < ActionMailer::Base
     @admin = admin
     @report_data = report_data
     Rails.logger.debug "Report Data desde purchase reporte mailer #{@report_data}"
-    puts "Report Data: #{@report_data.inspect}"
     mail(to: @admin.email, subject: 'Reporte Diario de Compras2')
   end
 end

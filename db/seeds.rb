@@ -19,7 +19,12 @@ def random_image_url
 end
 
 # Crear Administradores
-admin_count = 3
+Administrator.create(
+    name: 'Manuel',
+    email: 'cmanuferrer@gmail.com',
+    password: '123456'
+  )
+admin_count = 2
 admins = admin_count.times.map do
   Administrator.create(
     name: Faker::Name.name,
@@ -33,8 +38,8 @@ category_names = ['Electrónica', 'Hogar', 'Deportes', 'Ropa', 'Juguetes', 'Libr
 categories = category_names.map do |category_name|
   Category.create(
     name: category_name,
-    description: Faker::Lorem.sentence(8),  # Cambiado para usar un número entero
-    administrator_id: admins.sample.id      # Usar el ID en lugar del objeto
+    description: Faker::Lorem.sentence(8),
+    administrator_id: admins.sample.id
   )
 end
 
@@ -43,10 +48,10 @@ product_count = 15
 products = product_count.times.map do
   product = Product.create(
     name: Faker::Commerce.product_name,
-    description: Faker::Lorem.paragraph(5),  # Cambiado para usar un número entero
+    description: Faker::Lorem.paragraph(5),
     price: Faker::Commerce.price,
     stock: rand(20..150),
-    administrator_id: admins.sample.id       # Usar el ID del administrador en lugar del objeto completo
+    administrator_id: admins.sample.id
   )
 
   # Asignar entre 1 a 3 categorías aleatorias al producto
@@ -77,8 +82,8 @@ purchase_count.times do
   product = products.sample
   quantity = rand(1..5)
   Purchase.create(
-    customer_id: customer.id,      # Usar customer_id en lugar de customer
-    product_id: product.id,        # Usar product_id en lugar de product
+    customer_id: customer.id,
+    product_id: product.id,
     quantity: quantity,
     total_price: product.price * quantity,
     purchase_date: Faker::Time.between(1.year.ago, Date.today)

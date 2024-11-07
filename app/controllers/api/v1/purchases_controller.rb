@@ -24,6 +24,30 @@ module Api
       rescue ArgumentError => e
         render json: { error: e.message }, status: :unprocessable_entity
       end
+
+      def create
+        # Verifica que tanto el producto como el cliente existan
+        unless Product.exists?(id: params[:purchase][:product_id]) && Customer.exists?(id: params[:purchase][:customer_id])
+          render json: { error: 'Product or customer not found' }, status: :not_found
+          return
+        end
+
+        # Crea la compra si los registros existen
+        purchase = Purchase.new(purchase_params)
+
+        if purchase.save
+          render json: purchase, status: :created
+        else
+          render json: { errors: purchase.errors.full_messages }, status: :unprocessable_entity
+        end
+      end
+
+
+      private
+
+      def purchase_params
+        params[:purchase].slice(:product_id, :customer_id, :purchase_date, :quantity, :total_price)
+      end
     end
   end
 end
