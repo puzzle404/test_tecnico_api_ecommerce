@@ -66,7 +66,7 @@ RSpec.describe Api::V1::ProductsController, type: :controller do
 
   describe "GET top_revenue" do
     it "Devuelve los 3 productos que más han recaudado por cada categoría" do
-      # Generar el token de autenticación
+      # Generar el token de autenticaciónn
       token = generate_jwt_token_for_admin
 
       # Crear categorías
