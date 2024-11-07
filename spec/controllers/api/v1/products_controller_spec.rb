@@ -17,7 +17,7 @@ RSpec.describe Api::V1::ProductsController, type: :controller do
   end
 
   describe "GET most_purchased" do
-    it "Devuelve los productos más comprados por cada categoría" do
+    it "most purchased products by category" do
       # Generar el token de autenticación
       token = generate_jwt_token_for_admin
 
@@ -71,7 +71,7 @@ RSpec.describe Api::V1::ProductsController, type: :controller do
   end
 
   describe "GET top_revenue" do
-    it "Devuelve los 3 productos que más han recaudado por cada categoría" do
+    it "top revenue products by category" do
       # Generar el token de autenticaciónn
       token = generate_jwt_token_for_admin
 

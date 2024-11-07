@@ -10,6 +10,10 @@ module Api
       end
 
       def create
+        unless Administrator.exists?(id: params[:administrator_id])
+          render json: { error: 'Administrator not found' }, status: :not_found
+          return
+        end
         category = Category.new(category_params)
         if category.save
           render json: category, status: :created
