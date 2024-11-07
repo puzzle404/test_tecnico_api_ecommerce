@@ -8,16 +8,22 @@ RSpec.describe Api::V1::PurchasesController, type: :controller do
   # Omite el filtro `authenticate_admin!` para los tests de este controlador
   before(:each) do
     Api::V1::PurchasesController.skip_before_filter :authenticate_admin!
-  end
-
-  before(:each) do
     # Crear los datos necesarios para las pruebas
     @admin = Administrator.create!(name: "Admin", email: "admin@example.com", password: 123456)
     @category = Category.create!(name: "Category 1", administrator_id: @admin.id)
     @customer = Customer.create!(name: "Customer 1", email: "customer1@example.com", address: "123 Street")
     @product = Product.create!(name: "Product 1", price: 10.0, stock: 100, administrator_id: @admin.id)
     @purchase = Purchase.create!(product_id: @product.id, customer_id: @customer.id, quantity: 10, total_price: 100.0, purchase_date: Date.today)
+    # Desactiva los callbacks para el caso del envio de email
+    ENV['DISABLE_CALLBACKS_FOR_SEEDS'] = 'true'
   end
+
+  before(:after) do
+    ENV.delete('DISABLE_CALLBACKS_FOR_SEEDS')
+  end
+
+
+
 
   describe "GET #index" do
     it "filtra las compras por rango de fechas" do
