@@ -10,6 +10,11 @@ module Api
       end
 
       def create
+        unless Administrator.exists?(id: params[:product][:administrator_id])
+          render json: { error: 'Administrator not found' }, status: :not_found
+          return
+        end
+
         product = Product.new(product_params)
         if product.save
           render json: product, status: :created

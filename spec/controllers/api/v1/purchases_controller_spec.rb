@@ -26,26 +26,26 @@ RSpec.describe Api::V1::PurchasesController, type: :controller do
 
 
   describe "GET #index" do
-    it "filtra las compras por rango de fechas" do
+    it "purchase filter by dates" do
       get :index, start_date: 1.day.ago.to_date.to_s, end_date: Date.today.to_s
       expect(response.status).to eq(200)
       expect(JSON.parse(response.body).size).to eq(1)
     end
 
-    it "filtra las compras por categoría" do
+    it "purchase filter by category" do
       @product.categories << @category
       get :index, category_id: @category.id
       expect(response.status).to eq(200)
       expect(JSON.parse(response.body).size).to eq(1)
     end
 
-    it "filtra las compras por cliente" do
+    it "purchase filter by customer" do
       get :index, customer_id: @customer.id
       expect(response.status).to eq(200)
       expect(JSON.parse(response.body).size).to eq(1)
     end
 
-    it "filtra las compras por administrador" do
+    it "purchase filter by administrator" do
       get :index, administrator_id: @admin.id
       expect(response.status).to eq(200)
       expect(JSON.parse(response.body).size).to eq(1)
@@ -53,7 +53,7 @@ RSpec.describe Api::V1::PurchasesController, type: :controller do
   end
 
   describe "GET #count" do
-    it "agrupa las compras por hora de compra" do
+    it "purchases gruped by granularity equal to hour" do
       get :count, granularity: 'hour', start_date: Date.today.to_s, end_date: Date.today.to_s
       expect(response.status).to eq(200)
       purchases_count = JSON.parse(response.body)
@@ -61,7 +61,7 @@ RSpec.describe Api::V1::PurchasesController, type: :controller do
       expect(purchases_count.values.first).to eq(1)
     end
 
-    it "agrupa las compras por día de compra" do
+    it "purchases gruped by granularity equal to day" do
       get :count, granularity: 'day', start_date: Date.today.to_s, end_date: Date.today.to_s
       expect(response.status).to eq(200)
       purchases_count = JSON.parse(response.body)
@@ -69,7 +69,7 @@ RSpec.describe Api::V1::PurchasesController, type: :controller do
       expect(purchases_count.values.first).to eq(1)
     end
 
-    it "devuelve error con granularidad inválida" do
+    it "purchases gruped by granularity equal to invalid" do
       get :count, granularity: 'invalid'
       expect(response.status).to eq(422)
       error_message = JSON.parse(response.body)["error"]
