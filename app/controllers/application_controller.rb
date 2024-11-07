@@ -2,6 +2,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
 
   def authenticate_admin!
+    raise
     header = request.headers['Authorization']
     token = header.split(' ').last if header
 
