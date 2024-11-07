@@ -17,7 +17,7 @@ class DailyPurchaseReportWorker
     end
     Rails.logger.debug "Report Data desde purchase reporte mailer #{report_data}"
     # Enviamos el reporte a cada admin
-    Administrator.first.each do |admin|
+    Administrator.all.each do |admin|
       PurchaseReportMailer.daily_report(admin, report_data).deliver
     end
   end

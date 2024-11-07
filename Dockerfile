@@ -7,8 +7,8 @@ RUN apt-get update -qq && apt-get install -y \
   libpq-dev git-core # Se agrega libpq-dev para PostgreSQL
 
 # Instalar RVM para gestionar Ruby
-RUN gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 \
-  && gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 7D2BAF1CF37B13E2069D6956105BD0E739499BDB \
+RUN gpg --keyserver-options auto-key-retrieve --keyserver hkp://keyserver.ubuntu.com --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 || true \
+  && gpg --keyserver-options auto-key-retrieve --keyserver hkp://keyserver.ubuntu.com --recv-keys 7D2BAF1CF37B13E2069D6956105BD0E739499BDB || true \
   && curl -sSL https://rvm.io/mpapis.asc | gpg --import - \
   && curl -sSL https://rvm.io/pkuczynski.asc | gpg --import - \
   && curl -sSL https://get.rvm.io | bash -s stable
