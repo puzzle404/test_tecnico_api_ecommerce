@@ -24,6 +24,9 @@ jobs:
       - name: Build custom Ruby 1.9.3 container
         run: docker-compose up --build -d app sidekiq report-cron
 
+      - name: Set up database
+        run: docker-compose run app bash -c "RAILS_ENV=test bundle exec rails db:create db:migrate"
+
       - name: Run tests
         run: docker-compose run app bundle exec rspec
 
