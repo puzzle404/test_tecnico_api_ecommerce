@@ -12,7 +12,7 @@ RSpec.describe Api::V1::ProductsController, type: :controller do
     ENV['DISABLE_CALLBACKS_FOR_SEEDS'] = 'true'
   end
 
-  before(:after) do
+  after(:each) do
     ENV.delete('DISABLE_CALLBACKS_FOR_SEEDS')
   end
 
