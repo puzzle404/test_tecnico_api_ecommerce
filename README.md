@@ -31,7 +31,7 @@ Antes de comenzar, asegúrate de tener lo siguiente instalado:
     POSTGRES_DB=ecommerce_db
     DATABASE_HOST=db
     JWT_SECRET_KEY="d1e9b7c5e84a57bb7bd216d16c31a5f6f1b4e18f4e0f8c"
-    SENDGRID_API_KEY="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"
+    SENDGRID_API_KEY=
 
    ```
 
